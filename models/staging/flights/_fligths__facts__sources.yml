@@ -1,0 +1,78 @@
+sources:
+  - name: demo_src
+    description: данные из бд авиаперелетов
+    database: dwh_flight
+    schema: demo_src
+    tables:
+      - name: boarding_passes
+        description: посадочный талон
+        columns:
+          - name: ticket_no
+            description: номер билета
+          - name: flight_id
+            description: айди рейса
+          - name: boarding_no
+            description: номер посадки 
+          - name: seat_no
+            description: номер места
+
+      - name: flights
+        description: рейсы
+        columns:
+          - name: flight_id
+            description: айди рейса
+          - name: flight_no
+            description: номер борта         
+          - name: scheduled_departure
+            description: время отправления    
+          - name: scheduled_arrival
+            description: время прибытия
+          - name: departure_airport
+            description: аэропорт отправления
+          - name: arrival_airport
+            description: аэропорт прибытия
+          - name: status
+            description: статус рейса
+          - name: aircraft_code
+            description: код рейса
+          - name: actual_departure
+            description: фактическое время отправления
+          - name: actual_arrival
+            description: фактическое время прибытия
+        freshness:
+          warn_after:
+            count: 20000 # 20
+            period: hour
+          error_after:
+            count: 10000 # 2
+            period: day
+          filter: actual_departure::date - scheduled_departure::date < 30000
+        loaded_at_field: actual_departure::timestamp
+
+
+      - name: tickets
+        description: билеты
+        columns:
+          - name: ticket_no
+            description: номер билета
+          - name: book_ref
+            description: уникальный номер бронирования
+          - name: passenger_id
+            description: id пассажира (паспорт)
+          - name: passenger_name
+            description: ИО пассажира
+          - name: contact_data
+            description: контакты пассажира
+
+      - name: ticket_flights
+        description: перелеты по билетам
+        columns:
+          - name: ticket_no
+            description: номер билета
+          - name: flight_id
+            description: id рейса
+          - name: fare_conditions
+            description: класс обслуживания
+          - name: amount
+            description: цена перелета
+
