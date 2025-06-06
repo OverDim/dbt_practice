@@ -1,6 +1,9 @@
 {{
 
-config(materialized='table')
+config(
+    materialized='table',
+    tags = ['bookings']
+    )
 
 }}
 
